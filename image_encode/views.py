@@ -31,10 +31,13 @@ class ImageEncodeViewSet(mixins.CreateModelMixin, generics.GenericAPIView):
 
 class ImageDecodeViewSet(mixins.CreateModelMixin, generics.GenericAPIView):
     serializer_class = ImageDecodeSerializer
-
+    parser_classes = (MultiPartParser,)
+    
     def post(self, request, *args, **kwargs):
 
-        
-        image_data = pybase64.b64decode(base64_image_data)
+        data = request.data
 
-        return Response(data= {'encoded_image':base64_image}, status=200)
+        image_string = data['image_string']
+        image_data = pybase64.b64decode(image_string)
+
+        return Response(data= {'encoded_image': image_data}, status=200)
