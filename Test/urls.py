@@ -19,5 +19,6 @@ from django.urls import path,include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('information',include('git_info.urls'))
+    path('information',include('git_info.urls')),
+    path('encode',include('image_encode.urls')),
 ]
