@@ -12,6 +12,7 @@ import pybase64
 
 class ImageEncodeViewSet(mixins.CreateModelMixin, generics.GenericAPIView):
     serializer_class = ImageSerializer
+
     parser_classes = (MultiPartParser,)
 
     def post(self, request, *args, **kwargs):
@@ -37,7 +38,7 @@ class ImageDecodeViewSet(mixins.CreateModelMixin, generics.GenericAPIView):
 
         data = request.FILES
 
-        image_file = data['image_file']
+        image_file = data['upload_a_txt_file_with_base64_string_of_the_image']
         path = default_storage.save('fichier.txt', ContentFile(image_file.read()))
         txt_file_path = os.path.join(settings.MEDIA_ROOT, path)
         string = ''
@@ -52,4 +53,4 @@ class ImageDecodeViewSet(mixins.CreateModelMixin, generics.GenericAPIView):
         with open(tmp_file, 'wb') as f:
             f.write(image_data)
         
-        return Response(data= {'encoded_image': tmp_file}, status=200)
+        return Response(data= {'decoded_image': tmp_file}, status=200)
