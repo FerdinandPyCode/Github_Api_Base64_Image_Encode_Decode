@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.parsers import MultiPartParser
 from rest_framework import viewsets, generics, mixins
-from .serializers import ImageSerializer
+from .serializers import ImageSerializer,ImageDecodeSerializer
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
@@ -21,6 +21,20 @@ class ImageEncodeViewSet(mixins.CreateModelMixin, generics.GenericAPIView):
         path = default_storage.save(file_name, ContentFile(data.read()))
         tmp_file = os.path.join(settings.MEDIA_ROOT, path)
         
-        base64_image = pybase64.b64encode(tmp_file).decode('utf-8')
+        with open(tmp_file, 'rb') as f:
+            image_data = f.read()
+        
+        base64_image = pybase64.b64encode(image_data).decode('utf-8')
+
+        return Response(data= {'encoded_image':base64_image}, status=200)
+
+
+class ImageDecodeViewSet(mixins.CreateModelMixin, generics.GenericAPIView):
+    serializer_class = ImageDecodeSerializer
+
+    def post(self, request, *args, **kwargs):
+
+        
+        image_data = pybase64.b64decode(base64_image_data)
 
         return Response(data= {'encoded_image':base64_image}, status=200)
